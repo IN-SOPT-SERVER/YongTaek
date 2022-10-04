@@ -1,6 +1,6 @@
-import Dinner from './interface';
+import IDinner from './interfaces/IDinner';
 
-const dinner: Dinner = {
+const dinner: IDinner = {
     members: [ 
         { 
             name: "권세훈",
@@ -74,9 +74,9 @@ const dinner: Dinner = {
         return array;
     },
     organize(array) {
-      this.shuffle(array);
-      console.log(`${array.at(0).name}, ${array.at(1).name} 두분은 ${array.at(0).menu} 나눠드시면됩니다◕‿◕`);
+        this.shuffle(array);
+        console.log(`${array.at(0).name}, ${array.at(1).name} 두분은 ${array.at(0).menu} 나눠드시면됩니다◕‿◕`);
     },
 };
-  
+
 dinner.organize(dinner.members)
