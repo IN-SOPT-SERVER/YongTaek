@@ -75,7 +75,7 @@ const dinner: Dinner = {
     },
     organize(array) {
       this.shuffle(array);
-      console.log(`${array[0].name}, ${array[1].name} 두분은 ${array[0].menu} 나눠드시면됩니다◕‿◕`);
+      console.log(`${array.at(0).name}, ${array.at(1).name} 두분은 ${array.at(0).menu} 나눠드시면됩니다◕‿◕`);
     },
 };
   
