@@ -1,5 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
+import bcrypt from "bcryptjs";
+import { UserCreateDTO } from "../interfaces/UserCreateDTO";
 
 //* userId로 유저 조회
 const getUserById = async (userId: number) => {
@@ -13,17 +15,22 @@ const getUserById = async (userId: number) => {
 };
 
 // create user
-const createUser = async (name: string, email: string, age: number) => {
-    const data = await prisma.user.create({
-      data: {
-        userName: name,
-        email,
-        age
-      }
-    });
+const createUser = async (userCreateDto: UserCreateDTO) => {
+  const salt = await bcrypt.genSalt(10);
+  const password = await bcrypt.hash(userCreateDto.password, salt); 
 
-    return data;
+  const data = await prisma.user.create({
+    data: {
+      userName: userCreateDto?.name,
+      age: userCreateDto?.age,
+      email: userCreateDto.email,
+      password,
+    },
+  });
+
+  return data;
 };
+
 
 // get all user info
 const getAllUser = async () => {
