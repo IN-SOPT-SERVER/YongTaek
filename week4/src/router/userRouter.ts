@@ -1,12 +1,18 @@
 import { Router } from "express";
 import { userController } from "../controller";
+import { auth } from "../middlewares";
+import { body } from "express-validator"
 
 const router: Router = Router();
 
-router.get("/:userId", userController.getUserById);
+router.get("/:userId", auth, userController.getUserById);
 
 // create user
-router.post("/", userController.createUser);
+router.post(
+    "/",
+    [body("name").notEmpty(), body("email").notEmpty(), body("password").isLength({ min: 6 })],
+    userController.createUser
+);
 
 // get all user info
 router.get("/", userController.getAllUser);

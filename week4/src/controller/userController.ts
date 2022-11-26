@@ -1,5 +1,11 @@
 import { Request, Response } from "express";
 import { userService } from "../service";
+import { UserCreateDTO } from "../interfaces/UserCreateDTO";
+import { rm, sc } from "../constants"
+import { validationResult } from "express-validator";
+import jwtHandler from "../modules/jwtHandler"
+import { success, fail } from  "../constants/response"
+import { UserSignInDTO } from "../interfaces/userSignInDTO";
 
 const getUserById = async (req: Request, res: Response) => {
   const { userId } = req.params;
@@ -14,17 +20,21 @@ const getUserById = async (req: Request, res: Response) => {
 
 // create user
 const createUser = async (req: Request, res: Response) => {
-    const {userName, email, age} = req.body;
 
-    if (!userName) return res.status(404).json({ status: 400, message: "유저 생성 실패" });
+  //? validation의 결과를 바탕으로 분기 처리
+  const error = validationResult(req);
+  if(!error.isEmpty()) {
+    return res.status(sc.BAD_REQUEST).send(fail(sc.BAD_REQUEST, rm.BAD_REQUEST))
+  }
+  
+  const userCreateDto: UserCreateDTO = req.body;
+  const data = await userService.createUser(userCreateDto);
 
-    const data = await userService.createUser(userName, email, age);
+  if (!data) {
+    return res.status(sc.BAD_REQUEST).send(fail(sc.BAD_REQUEST, rm.SIGNUP_FAIL))
+  }
 
-    if (!data) {
-      return res.status(404).json({ status: 400, message: "유저 생성 실패" });
-    }
-
-    return res.status(200).json({ status: 200, message: "유저 생성 성공", data });
+  return res.status(sc.CREATED).send(success(sc.CREATED, rm.SIGNUP_SUCCESS, data))
 };
 
 // get all user info
